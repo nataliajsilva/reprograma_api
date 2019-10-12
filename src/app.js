@@ -6,8 +6,9 @@ const index = require('./routes/index')
 const alunas = require('./routes/alunasRoute')
 const professoras = require("./routes/professorasRoute")
 
-app.all('*', function(request,response,next){
-    console.log("Passando pelo app meuuu")
+app.use(function(request,response,next){
+    response.header('Access-Control-Allow-Origin','*')
+    response.header('Access-Control-Allow-Headers','Origin, X-Requested-With, Content-Type,Acecept')
     next ()
 })
 
