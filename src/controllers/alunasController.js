@@ -1,4 +1,5 @@
 const alunas = require("../model/alunas.json")
+const fs = require('fs');
 
 exports.get = (request,response) => {
     console.log(request.url)
@@ -61,4 +62,34 @@ exports.getAge = (req, res) => {
     }
     return idade
   }
+exports.post = (require,response) => {
+    const {nome, dateOfBirth, nasceuEmSp, id, livros} = require.body;
+    alunas.push({ nome, dateOfBirth, nasceuEmSp, id, livros});
 
+    fs.writeFile("./src/model/alunas.json",JSON.stringify(alunas),'utf8', function (err){
+        if (err) {
+            return response.status(500).send({ message: err});
+        }
+        console.log("The file was saved!");
+    })
+
+    return response.status(201).send(alunas);
+}
+exports.postBooks = (require, response) => {
+    const id = require.params.id
+    const aluna = alunas.find(aluna => aluna.id == id)
+    if (!aluna) {
+        response.send("Não encontrei essa garota")
+    }
+    const {titulo, leu} = require.body;
+    alunas[aluna.id - 1].livros.push({titulo, leu});
+
+    fs.writeFile("./src/model/alunas.json", JSON.stringify(alunas), 'utf8', function (err) {
+        if (err) {
+            return response.status(500).send({ message: err });
+        }
+        console.log("The file was saved!");
+    });
+
+    return response.status(201).send(alunas[aluna.id - 1].livros);
+}

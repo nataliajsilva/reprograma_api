@@ -1,4 +1,5 @@
 const professoras = require("../model/professoras.json")
+const fs = require('fs');
 
 exports.get = (request, response) => {
   res.status(200).send(professoras)
@@ -23,4 +24,18 @@ exports.getById =(request,response) => {
     delete professora.cpf
     response.status(200).send(professora)
 }
+exports.post = (require,response) => {
+  const {id, nome, especialidade, signo, cpf} = require.body;
+  professoras.push({ id, nome, especialidade, signo, cpf});
+
+  fs.writeFile("./src/model/professoras.json",JSON.stringify(professoras),'utf8', function (err){
+      if (err) {
+          return response.status(500).send({ message: err});
+      }
+      console.log("The file was saved!");
+  })
+
+  return response.status(201).send(professoras);
+}
+
 
